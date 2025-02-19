@@ -223,3 +223,17 @@ class Database:
         except Exception as e:
             print(f"清理重复单词时出错: {str(e)}")
             self.conn.rollback() 
+
+    def delete_word(self, word_id):
+        """删除指定单词及其学习记录"""
+        try:
+            # 先删除学习记录
+            self.cursor.execute('DELETE FROM learning_records WHERE word_id = ?', (word_id,))
+            # 再删除单词
+            self.cursor.execute('DELETE FROM words WHERE id = ?', (word_id,))
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f"删除单词时出错: {str(e)}")
+            self.conn.rollback()
+            return False 
